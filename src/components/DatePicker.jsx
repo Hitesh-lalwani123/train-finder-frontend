@@ -1,6 +1,6 @@
 // DatePickerComponent.js
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import RouteUI from "./RouteUI";
@@ -13,6 +13,13 @@ const DatePickerComponent = () => {
   const [shadow, setShadow] = useState("shadow-black");
   const [trainData, setTraindata] = useState([]);
   const [dataValid, setDatavalid] = useState(true);
+  const [availableTrains,setTrains] = useState([])
+  const [currTrain,setCurrTrain] = useState("12649")
+  
+  const [allowedDateStrings,setallowedDates] = useState([
+    "10-07-2025",
+    "08-08-2025",
+  ]);
   const stations = [
     "SBC",
     "RC",
@@ -36,6 +43,18 @@ const DatePickerComponent = () => {
     "HZM",
   ];
   const baseUrl = "https://train-finder-backend.onrender.com/"
+
+  useEffect(()=>{
+    axios.get(`${baseUrl}get-all-dates`).then((res)=>{
+      let datesarr = []
+      let response = res.data
+      for(let i = 0;i<response.length;i++){
+        datesarr.push(response[i].split(',')[0])
+      }
+      console.log(datesarr)
+      setallowedDates(datesarr)
+    })
+  },[])
   const handleFromChange = (e) => {
     // e.preventDefault();
     const station = e.target.value;
@@ -45,6 +64,11 @@ const DatePickerComponent = () => {
     const station = e.target.value;
     setTostation(station);
   };
+  const handleTrainChange = (e) => {
+    const train = e.target.value;
+    setCurrTrain(train);
+  };
+  
   const templist = [...Array(20).keys()];
   const formatDate = (date) => {
     const day = String(date.getDate()).padStart(2, "0");
@@ -60,19 +84,19 @@ const DatePickerComponent = () => {
         if (res.status == 200) {
           console.log("backend running...");
         } else {
-          console.log("problem with bakend");
+          console.log("problem with backend");
         }
       });
 
       axios
         .post(`${baseUrl}get-train-avl`, {
-          train_number: "12649",
+          train_number: currTrain,
           date: formatDate(selectedDate),
           from_station: fromStation,
           to_station: toStation,
         })
         .then((res) => {
-          let response = res.data["12649"];
+          let response = res.data[currTrain];
           console.log(response);
           if (response == "Data not available for current date. Scrape")
             setTraindata([]);
@@ -85,6 +109,11 @@ const DatePickerComponent = () => {
       setDatavalid(false);
     }
   };
+
+  const allowedDates = allowedDateStrings.map(dateStr => {
+    const [day, month, year] = dateStr.split("-");
+    return new Date(`${year}-${month}-${day}`);
+  });
   return (
     <>
       <div className="flex flex-row">
@@ -92,16 +121,50 @@ const DatePickerComponent = () => {
           <label className="text-lg font-semibold">Select a Date:</label>
           <DatePicker
             selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
+            onChange={(date) => {
+              setSelectedDate(date);
+              console.log(formatDate(date));
+              axios.post(`${baseUrl}get-all-trains`, { date: formatDate(date) }).then((res) => {
+                console.log(res.data);
+                setTrains(res.data || []);
+              });
+            }}
+            includeDates={allowedDates}
             className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholderText="Click to select a date"
             dateFormat="dd/MM/yyyy"
           />
+
           {selectedDate && (
             <div className="text-green-600">
               You picked: {selectedDate.toDateString()}
             </div>
           )}
+          {/* select train */}
+          <div className="flex flex-col gap-2 w-full max-w-md p-4">
+          <label className="text-gray-700 font-medium">
+            Select train:
+          </label>
+          <select
+            value={currTrain}
+            onChange={handleTrainChange}
+            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="" disabled>
+              -- Choose a train --
+            </option>
+            {availableTrains.map((train) => (
+              <option key={train} value={train}>
+                {train}
+              </option>
+            ))}
+          </select>
+
+          {fromStation && (
+            <div className="text-green-600">Selected: {currTrain}</div>
+          )}
+        </div>
+        {/* select from station */}
         </div>
         <div className="flex flex-col gap-2 w-full max-w-md p-4">
           <label className="text-gray-700 font-medium">
