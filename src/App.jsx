@@ -5,13 +5,13 @@ import Footer from './components/Footer'
 import Header from './components/Header'
 import Page from './components/Page'
 import WrapperComponent from './components/WrapperComponent'
-import { useState } from 'react'
 
 function App() {
 
   return (
     <>
       <WrapperComponent>
+        
         <div className='flex flex-col'></div>
         <Header/>
         <Page/>
