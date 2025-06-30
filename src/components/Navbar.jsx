@@ -3,7 +3,7 @@ import { FaTrain, FaBus, FaUserCircle, FaQuestionCircle, FaClipboardList } from 
 
 export default function Navbar() {
   return (
-    <div className="flex justify-between items-center px-6 py-4 shadow-md">
+    <div className="flex justify-between items-center px-6 py-4 shadow-md border-t border-black">
       <div className="flex space-x-6 items-center text-sm font-semibold">
         <div className="flex items-center space-x-1 border-green-600 text-green-600 text-xl">
           <FaTrain /><span>Train Route Finder</span>

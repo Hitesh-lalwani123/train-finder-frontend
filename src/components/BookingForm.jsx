@@ -21,7 +21,7 @@ export default function BookingForm() {
   const [availableTrains, setTrains] = useState([]);
   const [currTrain, setCurrTrain] = useState("12649");
   const [loading, setLoading] = useState(false);
-  const [bannerMargin, setBannermargin] = useState("-mt-20");
+  const [bannerMargin, setBannermargin] = useState("-mt-10");
   const [allowedDateStrings, setallowedDates] = useState([
     "10-07-2025",
     "08-08-2025",
