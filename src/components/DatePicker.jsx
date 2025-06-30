@@ -124,10 +124,10 @@ const DatePickerComponent = () => {
     return new Date(`${year}-${month}-${day}`);
   });
   return (
-    <>
-      <ScaleLoader color="green" loading={loading} />
+    <div className="flex flex-col h-screen">
+      
 
-      <div className="flex flex-row">
+      <div className="flex flex-row p-2 m-2">
         <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-lg shadow-md w-fit">
           <label className="text-lg font-semibold">Select a Date:</label>
           <DatePicker
@@ -177,118 +177,121 @@ const DatePickerComponent = () => {
               <div className="text-green-600">Selected: {currTrain}</div>
             )}
           </div>
+        </div>
           {/* select from station */}
-        </div>
-        <div className="flex flex-col gap-2 w-full max-w-md p-4">
-          <label className="text-gray-700 font-medium">
-            Select from Station:
-          </label>
-          <select
-            value={fromStation}
-            onChange={handleFromChange}
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" disabled>
-              -- Choose a station --
-            </option>
-            {stations.map((station) => (
-              <option key={station} value={station}>
-                {station}
+        <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-lg shadow-md w-fit">
+          <div className="flex flex-col gap-2 w-full max-w-md p-4">
+            <label className="text-gray-700 font-medium">
+              Select from Station:
+            </label>
+            <select
+              value={fromStation}
+              onChange={handleFromChange}
+              className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" disabled>
+                -- Choose a station --
               </option>
-            ))}
-          </select>
+              {stations.map((station) => (
+                <option key={station} value={station}>
+                  {station}
+                </option>
+              ))}
+            </select>
 
-          {fromStation && (
-            <div className="text-green-600">Selected: {fromStation}</div>
-          )}
-        </div>
-        {/* select to station */}
-        <div className="flex flex-col gap-2 w-full max-w-md p-4">
-          <label className="text-gray-700 font-medium">
-            Select from Station:
-          </label>
-          <select
-            value={toStation}
-            onChange={handleToChange}
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="" disabled>
-              -- Choose a station --
-            </option>
-            {stations.map((station) => (
-              <option
-                key={station}
-                value={station}
-                disabled={station == fromStation}
-              >
-                {station}
+            {fromStation && (
+              <div className="text-green-600">Selected: {fromStation}</div>
+            )}
+          </div>
+          {/* select to station */}
+          <div className="flex flex-col gap-2 w-full max-w-md p-4">
+            <label className="text-gray-700 font-medium">
+              Select to Station:
+            </label>
+            <select
+              value={toStation}
+              onChange={handleToChange}
+              className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" disabled>
+                -- Choose a station --
               </option>
-            ))}
-          </select>
+              {stations.map((station) => (
+                <option
+                  key={station}
+                  value={station}
+                  disabled={station == fromStation}
+                >
+                  {station}
+                </option>
+              ))}
+            </select>
 
-          {toStation && (
-            <div className="text-green-600">Selected: {toStation}</div>
-          )}
+            {toStation && (
+              <div className="text-green-600">Selected: {toStation}</div>
+            )}
+          </div>
         </div>
-        <ShimmerWrapper isLoading={loading}>
           <button
             className={`bg-green-400 px-2 m-4 w-40 h-20 text-md font-medium hover:text-xl hover:bg-green-500 transition-all duration-200 rounded-md shadow-md ${shadow} hover:cursor-pointer`}
             onClick={handleClick}
           >
             Find Trains
           </button>
-        </ShimmerWrapper>
       </div>
-      <div>Train data</div>
-      <div className="flex flex-col">
-        {trainData.map((item, ind) => {
-          let route_details = item[0];
-          let fare_details = item[1];
-          return (
-            <div key={ind} className=" h-auto w-auto m-2 p-2 flex flex-col">
-              <TrainCard>
-                <div>
-                  Route: {ind}, Fare: {fare_details}
-                </div>
-                <div className="flex flex-col justify-between p-1 m-2">
-                  {route_details.map((curr_item, key) => {
-                    let from_st = curr_item["from_station"];
-                    let to_st = curr_item["to_station"];
-                    let fare_cls = curr_item["fare_class"];
-                    return (
-                      <div
-                        key={key}
-                        className="flex flex-row justify-between p-1 m-1"
-                      >
-                        <div className="m-1 p-1 bg-green-700 text-white">
-                          {fare_cls}:{" "}
+      <div className="train-result bg-blue-400 h-max border border-black">
+        <div>Train data</div>
+        <div className="flex flex-col">
+          {trainData.map((item, ind) => {
+            let route_details = item[0];
+            let fare_details = item[1];
+            return (
+              <div key={ind} className=" h-auto w-auto m-2 p-2 flex flex-col">
+                <TrainCard>
+                  <div>
+                    Route: {ind}, Fare: {fare_details}
+                  </div>
+                  <div className="flex flex-col justify-between p-1 m-2">
+                    {route_details.map((curr_item, key) => {
+                      let from_st = curr_item["from_station"];
+                      let to_st = curr_item["to_station"];
+                      let fare_cls = curr_item["fare_class"];
+                      return (
+                        <div
+                          key={key}
+                          className="flex flex-row justify-between p-1 m-1"
+                        >
+                          <div className="m-1 p-1 bg-green-700 text-white">
+                            {fare_cls}:{" "}
+                          </div>
+                          {templist.map((itm, key) => {
+                            return (
+                              <div
+                                key={key}
+                                className={`h-2 w-full border border-black ${
+                                  (key >= from_st) & (key <= to_st - 1)
+                                    ? "bg-green-700"
+                                    : ""
+                                }`}
+                              >
+                                <span className="text-sm">{stations[key]}</span>
+                              </div>
+                            );
+                          })}
                         </div>
-                        {templist.map((itm, key) => {
-                          return (
-                            <div
-                              key={key}
-                              className={`h-2 w-full border border-black ${
-                                (key >= from_st) & (key <= to_st - 1)
-                                  ? "bg-green-700"
-                                  : ""
-                              }`}
-                            >
-                              <span className="text-sm">{stations[key]}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    );
-                  })}
-                </div>
-              </TrainCard>
-            </div>
-          );
-        })}
+                      );
+                    })}
+                  </div>
+                </TrainCard>
+              </div>
+            );
+          })}
+        </div>
+        <div>{dataValid ? "" : "Set Date First"}</div>
+        <ScaleLoader color="green" loading={loading} />
+
       </div>
-      <div>{dataValid ? "" : "Set Date First"}</div>
-      {/* <RouteUI/> */}
-    </>
+    </div>
   );
 };
 
